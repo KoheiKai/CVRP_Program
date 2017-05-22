@@ -6,7 +6,7 @@ import networkx as nx
 import itertools
 import matplotlib.pyplot as plt
 num_client = 15 #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
-capacity = 50 #トラックの容量
+capacity = 100 #トラックの容量
 randint = np.random.randint
 
 seed = 10
@@ -21,24 +21,19 @@ df.ix[0].y = 50
 df.ix[0].d = 0
 
 
+#全ての顧客間の距離テーブルを作成して、np.arrayを返す。
 def create_cost():
+    dis = []
+    arr = np.empty((0,num_client), int)#小数点以下を加えるるならfloat型
+    for i in range(num_client):
+        for j in range(num_client):
+            x_crd = df.ix[j].x - df.ix[i].x
+            y_crd = df.ix[j].y - df.ix[i].y
 
-    arr = np.empty((0,num_client), int)
-    arr = np.append(arr, np.array([[1,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]), axis=0)
-    arr = np.append(arr, np.array([[1,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]), axis=0)
-    arr = np.append(arr, np.array([[1,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]), axis=0)
-    arr = np.append(arr, np.array([[1,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]), axis=0)
-    arr = np.append(arr, np.array([[1,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]), axis=0)
-    arr = np.append(arr, np.array([[1,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]), axis=0)
-    arr = np.append(arr, np.array([[1,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]), axis=0)
-    arr = np.append(arr, np.array([[1,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]), axis=0)
-    arr = np.append(arr, np.array([[1,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]), axis=0)
-    arr = np.append(arr, np.array([[1,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]), axis=0)
-    arr = np.append(arr, np.array([[1,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]), axis=0)
-    arr = np.append(arr, np.array([[1,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]), axis=0)
-    arr = np.append(arr, np.array([[1,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]), axis=0)
-    arr = np.append(arr, np.array([[1,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]), axis=0)
-    arr = np.append(arr, np.array([[1,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]), axis=0)
+            dis.append(int(np.sqrt(np.power(x_crd,2) + np.power(y_crd,2))))
+            if j == num_client-1:
+                arr = np.append(arr, np.array([dis]), axis=0)
+                dis = []
     return arr
 
 
@@ -91,11 +86,18 @@ for st in subtours:
     print(len(st) - np.max([0,np.ceil(demand/capacity)]))
     problem += pulp.lpSum(arcs) <= np.max([0,len(st) - np.ceil(demand/capacity)])
 
+
+
+print(df)
+print(cost)
+
+
 #計算及び結果の確認
 status = problem.solve()
 print("Status", pulp.LpStatus[status])
 for i in range(num_client):
     for j in range(num_client):
-        print(i,j,x[i][j].value())
+        if(x[i][j].value() == 1.0):
+            print(i,j,x[i][j].value())
 
 output_image(G,x)
