@@ -1,8 +1,10 @@
+#-*- coding: utf-8 -*-
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-num_client = 15 #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
+num_client = 30 #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
 capacity = 100 #トラックの容量
 randint = np.random.randint
 
