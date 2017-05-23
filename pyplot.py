@@ -1,19 +1,18 @@
-# -*- coding: utf-8 -*-
 
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-num_client = 15 #ŒÚ‹q”iid=0,1,2,...14‚Æ”Ô†‚ªU‚ç‚ê‚Ä‚¢‚é‚Æl‚¦‚éBid=0‚Íƒfƒ|Bj
-capacity = 100 #ƒgƒ‰ƒbƒN‚Ì—e—Ê
+num_client = 15 #é¡§å®¢æ•°ï¼ˆid=0,1,2,...14ã¨ç•ªå·ãŒæŒ¯ã‚‰ã‚Œã¦ã„ã‚‹ã¨è€ƒãˆã‚‹ã€‚id=0ã¯ãƒ‡ãƒã€‚ï¼‰
+capacity = 100 #ãƒˆãƒ©ãƒƒã‚¯ã®å®¹é‡
 randint = np.random.randint
 
-# ŠeŒÚ‹q‚Ìx,yÀ•W‚Æù—vi‚Ç‚Ì‚­‚ç‚¢‚Ì¤•i‚ª—~‚µ‚¢‚©j‚ğDataFrame‚Æ‚µ‚Äì¬
+#å„é¡§å®¢ã®x,yåº§æ¨™ã¨éœ€è¦ï¼ˆã©ã®ãã‚‰ã„ã®å•†å“ãŒæ¬²ã—ã„ã‹ï¼‰ã‚’DataFrameã¨ã—ã¦ä½œæˆ
 df = pd.DataFrame({"x":randint(0,100,num_client),
                    "y":randint(0,100,num_client),
                    "d":randint(5,40,num_client)})
-#0”Ô–Ú‚ÌŒÚ‹q‚Íƒfƒ|i‹’“_j‚Æ‚İ‚È‚·B‚È‚Ì‚ÅAù—v=0, ‰Â‹‰»‚Ì‚É^‚ñ’†‚É—ˆ‚é‚æ‚¤A
-#x,y‚ğ50‚ÉB
+#0ç•ªç›®ã®é¡§å®¢ã¯ãƒ‡ãƒï¼ˆæ‹ ç‚¹ï¼‰ã¨ã¿ãªã™ã€‚ãªã®ã§ã€éœ€è¦=0, å¯è¦–åŒ–ã®æ™‚ã«çœŸã‚“ä¸­ã«æ¥ã‚‹ã‚ˆã†ã€
+#x,yã‚’50ã«
 df.ix[0].x = 50
 df.ix[0].y = 50
 df.ix[0].d = 0

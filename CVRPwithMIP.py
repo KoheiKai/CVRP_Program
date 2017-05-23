@@ -82,6 +82,9 @@ for t in range(1,num_client):
 problem += pulp.lpSum(x[:,0]) == num_v
 problem += pulp.lpSum(x[0,:]) == num_v
 
+
+print("計算中")
+
 # ここは肝。上記までの制約だと、デポに戻らない孤立閉路が出来てしまう。ここでやっているのは、
 # subtour eliminate制約。さらに、需要も見て、ここでCapacity制約も追加している。興味がある
 # 方は、subtour eliminateで検索してください。
@@ -96,11 +99,13 @@ for st in subtours:
     #print(len(st) - np.max([0,np.ceil(demand/capacity)]))
     problem += pulp.lpSum(arcs) <= np.max([0,len(st) - np.ceil(demand/capacity)])
 
-
+print("顧客数：" + str(num_client-1))
+print("トラック容量：" + str(capacity))
 
 print(df)
 print(cost)
 
+print("トラック台数：" + str(num_v) + "台")
 
 #計算及び結果の確認
 status = problem.solve()
