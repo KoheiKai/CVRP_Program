@@ -7,7 +7,7 @@ import itertools
 import matplotlib.pyplot as plt
 
 num_client = 15 #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
-capacity = 70 #トラックの容量
+capacity = 150 #トラックの容量
 randint = np.random.randint
 
 seed = 10
