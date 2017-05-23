@@ -1,10 +1,10 @@
-#-*- coding: utf-8 -*-
+# coding: utf-8
 
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-num_client = 30 #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
+num_client = 15 #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
 capacity = 100 #トラックの容量
 randint = np.random.randint
 
@@ -18,17 +18,20 @@ df.ix[0].x = 50
 df.ix[0].y = 50
 df.ix[0].d = 0
 
-x=[]
-y=[]
+X=[]
+Y=[]
 for i in range(1, num_client):
-    x.append(df.ix[i].x)
-    y.append(df.ix[i].y)
+    X.append(df.ix[i].x)
+    Y.append(df.ix[i].y)
 
 
-plt.scatter(df.ix[0].x, df.ix[0].y, s= 400, c="yellow", marker="*", alpha=0.5, linewidths="2", edgecolors="orange")
-plt.plot(x, y, "o")
+plt.scatter(df.ix[0].x, df.ix[0].y, s= 400, c="yellow", marker="*", alpha=0.5, linewidths="2", edgecolors="orange", label="depot")
+plt.plot(X, Y, "o")
 #plt.hlines([50], 0, 100, linestyles="dashed")
 #plt.vlines([50], 0, 100, linestyles="dashed")
+plt.legend()
+plt.xlabel("x")
+plt.ylabel("y")
 plt.xlim(0, 100)
 plt.ylim(0, 100)
 plt.show()

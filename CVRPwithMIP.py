@@ -5,8 +5,9 @@ import numpy as np
 import networkx as nx
 import itertools
 import matplotlib.pyplot as plt
+
 num_client = 15 #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
-capacity = 100 #トラックの容量
+capacity = 70 #トラックの容量
 randint = np.random.randint
 
 seed = 10
@@ -19,6 +20,15 @@ df = pd.DataFrame({"x":randint(0,100,num_client),
 df.ix[0].x = 50
 df.ix[0].y = 50
 df.ix[0].d = 0
+
+#描画用リストに顧客の位置情報を代入
+X=[]
+Y=[]
+for i in range(1, num_client):
+    X.append(df.ix[i].x)
+    Y.append(df.ix[i].y)
+
+
 
 
 #全ての顧客間の距離テーブルを作成して、np.arrayを返す。
@@ -83,7 +93,7 @@ for st in subtours:
         demand += df["d"][s]
     for i,j in itertools.permutations(st,2):
         arcs.append(x[i][j])
-    print(len(st) - np.max([0,np.ceil(demand/capacity)]))
+    #print(len(st) - np.max([0,np.ceil(demand/capacity)]))
     problem += pulp.lpSum(arcs) <= np.max([0,len(st) - np.ceil(demand/capacity)])
 
 
@@ -100,4 +110,16 @@ for i in range(num_client):
         if(x[i][j].value() == 1.0):
             print(i,j,x[i][j].value())
 
-output_image(G,x)
+#output_image(G,x)
+plt.scatter(df.ix[0].x, df.ix[0].y, s= 400, c="yellow", marker="*", alpha=0.5, linewidths="2", edgecolors="orange", label="depot")
+plt.plot(X, Y, "o")
+#plt.hlines([50], 0, 100, linestyles="dashed")
+#plt.vlines([50], 0, 100, linestyles="dashed")
+plt.legend()
+plt.xlabel("x")
+plt.ylabel("y")
+plt.xlim(0, 100)
+plt.ylim(0, 100)
+plt.title("CVRPwithMIP")
+plt.grid()
+plt.show()
