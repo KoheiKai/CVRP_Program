@@ -105,7 +105,6 @@ print("トラック容量：" + str(capacity))
 print(df)
 print(cost)
 
-print("トラック台数：" + str(num_v) + "台")
 
 #計算及び結果の確認
 status = problem.solve()
@@ -115,6 +114,8 @@ for i in range(num_client):
         if(x[i][j].value() == 1.0):
             print(i,j,x[i][j].value())
 
+
+print("トラック台数：" + str(num_v.value()) + "台")
 #output_image(G,x)
 plt.scatter(df.ix[0].x, df.ix[0].y, s= 400, c="yellow", marker="*", alpha=0.5, linewidths="2", edgecolors="orange", label="depot")
 plt.plot(X, Y, "o")

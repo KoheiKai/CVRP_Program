@@ -2,6 +2,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import networkx as nx
+import pylab
+import json
+from networkx.readwrite import json_graph
 
 num_client = 15 #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
 capacity = 100 #トラックの容量
@@ -16,6 +20,7 @@ df = pd.DataFrame({"x":randint(0,100,num_client),
 df.ix[0].x = 50
 df.ix[0].y = 50
 df.ix[0].d = 0
+
 
 X=[]
 Y=[]
@@ -34,3 +39,31 @@ plt.ylabel("y")
 plt.xlim(0, 100)
 plt.ylim(0, 100)
 plt.show()
+
+"""
+G = nx.Graph()
+
+#for node in range(num_client):
+#    G.add_node(str(node))
+G.add_node("nodeA")
+G.add_node("nodeB")
+
+
+G. add_edge("nodeA", "nodeB")
+
+
+
+
+pos={}
+#for coordinate in range(num_client):
+#    pos[coordinate]=(df.ix[coordinate].x, df.ix[coordinate].y)
+
+#pos["nodeA"] = (0,0)
+#pos["nodeB"] = (1,3)
+
+
+nx.draw(G, pos)
+G = nx.Graph()
+plt.ishold()
+plt.show()
+"""
