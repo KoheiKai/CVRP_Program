@@ -40,30 +40,4 @@ plt.xlim(0, 100)
 plt.ylim(0, 100)
 plt.show()
 
-"""
-G = nx.Graph()
 
-#for node in range(num_client):
-#    G.add_node(str(node))
-G.add_node("nodeA")
-G.add_node("nodeB")
-
-
-G. add_edge("nodeA", "nodeB")
-
-
-
-
-pos={}
-#for coordinate in range(num_client):
-#    pos[coordinate]=(df.ix[coordinate].x, df.ix[coordinate].y)
-
-#pos["nodeA"] = (0,0)
-#pos["nodeB"] = (1,3)
-
-
-nx.draw(G, pos)
-G = nx.Graph()
-plt.ishold()
-plt.show()
-"""

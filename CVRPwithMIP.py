@@ -7,7 +7,7 @@ import itertools
 import matplotlib.pyplot as plt
 
 num_client = 15 #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
-capacity = 150 #トラックの容量
+capacity = 70 #トラックの容量
 randint = np.random.randint
 
 seed = 10
@@ -21,14 +21,25 @@ df.ix[0].x = 50
 df.ix[0].y = 50
 df.ix[0].d = 0
 
+"""
 #描画用リストに顧客の位置情報を代入
 X=[]
 Y=[]
 for i in range(1, num_client):
     X.append(df.ix[i].x)
     Y.append(df.ix[i].y)
+"""
 
 
+G = nx.Graph()
+
+N = []
+for i in range(num_client):
+    N.append(i)
+
+pos = {}
+for position in range(num_client):
+    pos[N[position]] = (df.ix[position].x,df.ix[position].y )
 
 
 #全ての顧客間の距離テーブルを作成して、np.arrayを返す。
@@ -106,6 +117,8 @@ print(df)
 print(cost)
 
 
+E = []
+edge_labels = {}
 #計算及び結果の確認
 status = problem.solve()
 print("Status", pulp.LpStatus[status])
@@ -113,14 +126,15 @@ for i in range(num_client):
     for j in range(num_client):
         if(x[i][j].value() == 1.0):
             print(i,j,x[i][j].value())
-
+            E.append((i,j))
+            edge_labels[(i,j)] = cost[i][j]
 
 print("トラック台数：" + str(num_v.value()) + "台")
-#output_image(G,x)
+
+
+"""
 plt.scatter(df.ix[0].x, df.ix[0].y, s= 400, c="yellow", marker="*", alpha=0.5, linewidths="2", edgecolors="orange", label="depot")
 plt.plot(X, Y, "o")
-#plt.hlines([50], 0, 100, linestyles="dashed")
-#plt.vlines([50], 0, 100, linestyles="dashed")
 plt.legend()
 plt.xlabel("x")
 plt.ylabel("y")
@@ -129,3 +143,21 @@ plt.ylim(0, 100)
 plt.title("CVRPwithMIP")
 plt.grid()
 plt.show()
+"""
+
+G.add_nodes_from(N)
+G.add_edges_from(E)
+
+nx.draw_networkx(G,pos,with_labels=True,node_color='r', node_size=150)
+nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels, font_size=8)
+
+plt.legend()
+plt.xlabel("x")
+plt.ylabel("y")
+plt.xlim(0, 100)
+plt.ylim(0, 100)
+#plt.axis('off')
+plt.title('CVRP with MIP')
+plt.savefig("cvrp.png") # save as png
+plt.grid()
+plt.show() 
