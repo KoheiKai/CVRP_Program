@@ -5,6 +5,7 @@ import numpy as np
 import networkx as nx
 import itertools
 import matplotlib.pyplot as plt
+import time
 
 num_client = 15 #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
 capacity = 70 #トラックの容量
@@ -119,9 +120,14 @@ print(cost)
 
 E = []
 edge_labels = {}
+
+start = time.time()
 #計算及び結果の確認
 status = problem.solve()
 print("Status", pulp.LpStatus[status])
+
+elapsed_time = time.time() - start
+print("計算時間：" + str(elapsed_time) + "[sec]")
 for i in range(num_client):
     for j in range(num_client):
         if(x[i][j].value() == 1.0):
