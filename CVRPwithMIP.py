@@ -37,10 +37,11 @@ G = nx.Graph()
 N = []
 for i in range(num_client):
     N.append(i)
+    #N.append(df.ix[i].d)
 
 pos = {}
 for position in range(num_client):
-    pos[N[position]] = (df.ix[position].x,df.ix[position].y )
+    pos[position] = (df.ix[position].x,df.ix[position].y )
 
 
 #全ての顧客間の距離テーブルを作成して、np.arrayを返す。
@@ -151,10 +152,19 @@ plt.grid()
 plt.show()
 """
 
+#print("------problem----")
+#print(problem)
+
+labels = {}
+for i in range(num_client):
+    labels[i] = df.ix[i].d
+
+
 G.add_nodes_from(N)
 G.add_edges_from(E)
 
-nx.draw_networkx(G,pos,with_labels=True,node_color='r', node_size=150)
+nx.draw_networkx(G,pos,with_labels=False,node_color='r', node_size=150)
+nx.draw_networkx_labels(G,pos,labels, font_size=12)
 nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels, font_size=8)
 
 plt.legend()
