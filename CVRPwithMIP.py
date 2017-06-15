@@ -8,10 +8,18 @@ import matplotlib.pyplot as plt
 import time
 
 num_client = 15 #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
-capacity = 70 #トラックの容量
+capacity = 40 #トラックの容量
 randint = np.random.randint
 
-seed = 10
+#seed = 10
+
+df = pd.read_csv("data_r101.csv")
+num_client = len(df.index) #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
+
+
+
+
+"""
 # 各顧客のx,y座標と需要（どのくらいの商品が欲しいか）をDataFrameとして作成
 df = pd.DataFrame({"x":randint(0,100,num_client),
                    "y":randint(0,100,num_client),
@@ -21,15 +29,16 @@ df = pd.DataFrame({"x":randint(0,100,num_client),
 df.ix[0].x = 50
 df.ix[0].y = 50
 df.ix[0].d = 0
-
 """
+
+
 #描画用リストに顧客の位置情報を代入
 X=[]
 Y=[]
 for i in range(1, num_client):
     X.append(df.ix[i].x)
     Y.append(df.ix[i].y)
-"""
+
 
 
 G = nx.Graph()
@@ -170,8 +179,8 @@ nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels, font_size=8)
 plt.legend()
 plt.xlabel("x")
 plt.ylabel("y")
-plt.xlim(0, 100)
-plt.ylim(0, 100)
+plt.xlim(0, 70)
+plt.ylim(0, 70)
 #plt.axis('off')
 plt.title('CVRP with MIP')
 plt.savefig("cvrp.png") # save as png

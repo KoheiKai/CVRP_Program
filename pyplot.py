@@ -11,16 +11,22 @@ num_client = 15 #顧客数（id=0,1,2,...14と番号が振られていると考�
 capacity = 100 #トラックの容量
 randint = np.random.randint
 
+df = pd.read_csv("data_r101.csv")
+
+"""
 #各顧客のx,y座標と需要（どのくらいの商品が欲しいか）をDataFrameとして作成
 df = pd.DataFrame({"x":randint(0,100,num_client),
                    "y":randint(0,100,num_client),
                    "d":randint(5,40,num_client)})
+
 #0番目の顧客はデポ（拠点）とみなす。なので、需要=0, 可視化の時に真ん中に来るよう、
 #x,yを50に
 df.ix[0].x = 50
 df.ix[0].y = 50
 df.ix[0].d = 0
-
+"""
+print (df)
+print("行数:" + str(len(df.index)))
 
 X=[]
 Y=[]
