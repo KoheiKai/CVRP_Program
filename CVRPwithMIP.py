@@ -6,17 +6,21 @@ import networkx as nx
 import itertools
 import matplotlib.pyplot as plt
 import time
+import csv
 
-num_client = 15 #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
+
+f=open("output.csv", "ab")
+csvwriter = csv.writer(f)
+
+#num_client = 15 #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
 capacity = 40 #トラックの容量
 randint = np.random.randint
-
-#seed = 10
 
 df = pd.read_csv("data_r101.csv")
 num_client = len(df.index) #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
 
-
+print(num_client)
+print(df)
 
 
 """
@@ -56,7 +60,7 @@ for position in range(num_client):
 #全ての顧客間の距離テーブルを作成して、np.arrayを返す。
 def create_cost():
     dis = []
-    arr = np.empty((0,num_client), int)#小数点以下を加えるるならfloat型
+    arr = np.empty((0,num_client), int)#小数点以下を加えるならfloat型
     for i in range(num_client):
         for j in range(num_client):
             x_crd = df.ix[j].x - df.ix[i].x
@@ -66,16 +70,20 @@ def create_cost():
             if j == num_client-1:
                 arr = np.append(arr, np.array([dis]), axis=0)
                 dis = []
+    np.savetxt("cost.csv",arr, delimiter=',', fmt='%.2f')
     return arr
 
 
 
 # costは顧客数✖️顧客数の距離テーブル。np.arrayで保持。  
 cost = create_cost()
-# subtoursはデポ（id=0)を除いた顧客の全部分集合。これがなんの役に立つかは後ほど。
+
+# subtoursはデポ（id=0)を除いた顧客の全部分集合。
 subtours = []
 for length in range(2,num_client):
      subtours += itertools.combinations(range(1,num_client),length)
+
+#print(subtours)
 
 
 # xは顧客数✖️顧客数のbinary変数Array。Costテーブルと対応している。1ならばその間をトラックが走ることになる。
@@ -84,6 +92,7 @@ x = np.array([[pulp.LpVariable("{0}_{1}".format(i,j),0,1,"Binary")
                for j in range(num_client)]
               for i in range(num_client)])
 num_v = pulp.LpVariable("num_v",0,100,"Integer")
+
 
 #問題の宣言と目的関数設定。目的関数は、総距離最小化。
 problem = pulp.LpProblem('vrp_simple_problem', pulp.LpMinimize)
@@ -118,14 +127,17 @@ for st in subtours:
         demand += df["d"][s]
     for i,j in itertools.permutations(st,2):
         arcs.append(x[i][j])
-    #print(len(st) - np.max([0,np.ceil(demand/capacity)]))
     problem += pulp.lpSum(arcs) <= np.max([0,len(st) - np.ceil(demand/capacity)])
+    #problem += pulp.lpSum(arcs) <= len(st) - 1
+    #problem += pulp.lpSum(demand) <= capacity
+
 
 print("顧客数：" + str(num_client-1))
 print("トラック容量：" + str(capacity))
 
 print(df)
 print(cost)
+#print(x)
 
 
 E = []
@@ -138,14 +150,18 @@ print("Status", pulp.LpStatus[status])
 
 elapsed_time = time.time() - start
 print("計算時間：" + str(elapsed_time) + "[sec]")
+
+sum_cost = 0
 for i in range(num_client):
     for j in range(num_client):
         if(x[i][j].value() == 1.0):
+            sum_cost += cost[i][j]
             print(i,j,x[i][j].value())
             E.append((i,j))
             edge_labels[(i,j)] = cost[i][j]
 
 print("トラック台数：" + str(num_v.value()) + "台")
+print(sum_cost)
 
 
 """
