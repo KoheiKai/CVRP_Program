@@ -17,7 +17,9 @@ capacity = 40 #トラックの容量
 randint = np.random.randint
 
 df = pd.read_csv("data_r101.csv")
-num_client = len(df.index) #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
+#num_client = len(df.index) #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
+num_client = 12  #ここで避難所数調整
+
 
 print(num_client)
 print(df)
@@ -135,7 +137,7 @@ for st in subtours:
 print("顧客数：" + str(num_client-1))
 print("トラック容量：" + str(capacity))
 
-print(df)
+#print(df)
 print(cost)
 #print(x)
 
@@ -161,7 +163,7 @@ for i in range(num_client):
             edge_labels[(i,j)] = cost[i][j]
 
 print("トラック台数：" + str(num_v.value()) + "台")
-print(sum_cost)
+print("総移動コスト" + str(sum_cost))
 
 
 """
