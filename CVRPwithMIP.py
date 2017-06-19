@@ -18,7 +18,7 @@ randint = np.random.randint
 
 df = pd.read_csv("data_r101.csv")
 #num_client = len(df.index) #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
-num_client = 10  #ここで避難所数調整
+num_client = 9  #ここで避難所数調整
 
 
 print(num_client)
