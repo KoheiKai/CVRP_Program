@@ -18,7 +18,7 @@ randint = np.random.randint
 
 df = pd.read_csv("data_r101.csv")
 #num_client = len(df.index) #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
-num_client = 7  #ここで避難所数調整
+num_client = 20  #ここで避難所数調整
 
 
 print(num_client)
@@ -118,9 +118,11 @@ problem += pulp.lpSum(x[0,:]) == num_v
 
 print("計算中")
 
-# ここは肝。上記までの制約だと、デポに戻らない孤立閉路が出来てしまう。ここでやっているのは、
-# subtour eliminate制約。さらに、需要も見て、ここでCapacity制約も追加している。興味がある
-# 方は、subtour eliminateで検索してください。
+# 上記までの制約だと、デポに戻らない孤立閉路が出来てしまう。
+# subtour eliminate制約。経路の部分集合の総需要に対して，
+# capacityを超えるようであれば経路の長さ−2となり，
+# 閉路が作れなくなる 
+count = 0
 for st in subtours:
     arcs = []
     demand = 0
@@ -130,10 +132,12 @@ for st in subtours:
     for i,j in itertools.permutations(st,2):
         arcs.append(x[i][j])
     problem += pulp.lpSum(arcs) <= np.max([0,len(st) - np.ceil(demand/capacity)])
+    count += 1
     #problem += pulp.lpSum(arcs) <= len(st) - 1
     #problem += pulp.lpSum(demand) <= capacity
 
 
+print("制約数" + str(count))
 print("顧客数：" + str(num_client-1))
 print("トラック容量：" + str(capacity))
 
@@ -179,8 +183,8 @@ plt.grid()
 plt.show()
 """
 
-print("------problem----")
-print(problem)
+#print("------problem----")
+#print(problem)
 
 labels = {}
 for i in range(num_client):
