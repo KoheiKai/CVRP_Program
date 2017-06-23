@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Created by Kohei Kai (2017)
+# 積載量制約付き配送計画問題をPuLPソルバを使って解く
+
 
 import pulp
 import pandas as pd
@@ -8,17 +14,21 @@ import matplotlib.pyplot as plt
 import time
 import csv
 
-
+"""
 f=open("output.csv", "ab")
 csvwriter = csv.writer(f)
+"""
 
 #num_client = 15 #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
 capacity = 40 #トラックの容量
 randint = np.random.randint
 
-df = pd.read_csv("data_r101.csv")
+df = pd.read_csv("./data/data_r101.csv")
 #num_client = len(df.index) #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
-num_client = 20  #ここで避難所数調整
+num_client = 10 #ここで避難所数調整
+
+#通れない道路
+#cant = {(5,17),(3,9),(14,16)}
 
 
 print(num_client)
@@ -77,7 +87,7 @@ def create_cost():
 
 
 
-# costは顧客数✖️顧客数の距離テーブル。np.arrayで保持。  
+# costは顧客数✖️顧客数の距離テーブル。np.arrayで保持。
 cost = create_cost()
 
 # subtoursはデポ（id=0)を除いた顧客の全部分集合。
@@ -115,13 +125,20 @@ for t in range(1,num_client):
 problem += pulp.lpSum(x[:,0]) == num_v
 problem += pulp.lpSum(x[0,:]) == num_v
 
+"""
+for edge in cant:
+    cant_edge =[]
+    for i,j in itertools.permutations(edge,2):
+        problem += x[i][j] == 0
+"""
+
 
 print("計算中")
 
 # 上記までの制約だと、デポに戻らない孤立閉路が出来てしまう。
 # subtour eliminate制約。経路の部分集合の総需要に対して，
 # capacityを超えるようであれば経路の長さ−2となり，
-# 閉路が作れなくなる 
+# 閉路が作れなくなる
 count = 0
 for st in subtours:
     arcs = []
@@ -131,10 +148,9 @@ for st in subtours:
         demand += df["d"][s]
     for i,j in itertools.permutations(st,2):
         arcs.append(x[i][j])
-    problem += pulp.lpSum(arcs) <= np.max([0,len(st) - np.ceil(demand/capacity)])
+    #problem += pulp.lpSum(arcs) <= np.max([0,len(st) - np.ceil(demand/capacity)])
     count += 1
-    #problem += pulp.lpSum(arcs) <= len(st) - 1
-    #problem += pulp.lpSum(demand) <= capacity
+    problem += pulp.lpSum(arcs) <= len(st)-1
 
 
 print("制約数" + str(count))
@@ -143,7 +159,6 @@ print("トラック容量：" + str(capacity))
 
 #print(df)
 print(cost)
-#print(x)
 
 
 E = []
@@ -170,19 +185,6 @@ print("トラック台数：" + str(num_v.value()) + "台")
 print("総移動コスト" + str(sum_cost))
 
 
-"""
-plt.scatter(df.ix[0].x, df.ix[0].y, s= 400, c="yellow", marker="*", alpha=0.5, linewidths="2", edgecolors="orange", label="depot")
-plt.plot(X, Y, "o")
-plt.legend()
-plt.xlabel("x")
-plt.ylabel("y")
-plt.xlim(0, 100)
-plt.ylim(0, 100)
-plt.title("CVRPwithMIP")
-plt.grid()
-plt.show()
-"""
-
 #print("------problem----")
 #print(problem)
 
@@ -194,7 +196,7 @@ for i in range(num_client):
 G.add_nodes_from(N)
 G.add_edges_from(E)
 
-nx.draw_networkx(G,pos,with_labels=False,node_color='r', node_size=150)
+nx.draw_networkx(G,pos,with_labels=False,node_color='r', node_size=200)
 nx.draw_networkx_labels(G,pos,labels, font_size=12)
 nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels, font_size=8)
 
@@ -204,7 +206,7 @@ plt.ylabel("y")
 plt.xlim(0, 70)
 plt.ylim(0, 70)
 #plt.axis('off')
-plt.title('CVRP with MIP')
-plt.savefig("cvrp.png") # save as png
+plt.title('Delivery route')
+plt.savefig("./fig/cvrp.png") # save as png
 plt.grid()
-plt.show() 
+plt.show()
