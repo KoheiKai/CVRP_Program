@@ -1,0 +1,65 @@
+\documentclass{kupaper}
+\usepackage{jtygm}%%%%%%%%%%%%%%%%%Font Warning対策%%%%%
+
+
+% プリアンブルに追加する
+
+\includeonly{0,1,2,3,4,5,6,thanks}
+
+\begin{document}
+
+
+
+%序章
+\include{0}
+
+\Maketitle
+%\listoftables
+%\listobfigures
+
+%\setcounter{chapter}{20}
+
+\include{1}
+
+
+
+\include{2}
+
+\include{3}
+
+\include{4}
+
+
+\include{5}
+
+\include{6}
+
+
+
+%謝辞
+\include{thanks}
+
+
+% 参考文献
+%\include{cite}
+\bibliographystyle{junsrt}
+\bibliography{ref}
+
+
+%\include{huroku}
+
+% 目次  (LaTeX の処理を少くする目的で，最後に書いています)
+\pagenumbering{roman}
+\setcounter{page}{1}
+\tableofcontents
+
+
+
+\end{document}
+
+% Local Variables:
+% TeX-master: t
+% mode: yatex
+% End:
+
+

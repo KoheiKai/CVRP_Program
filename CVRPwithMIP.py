@@ -19,13 +19,12 @@ f=open("output.csv", "ab")
 csvwriter = csv.writer(f)
 """
 
-#num_client = 15 #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
-capacity = 40 #トラックの容量
+capacity = 30 #トラック容量
 randint = np.random.randint
 
 df = pd.read_csv("./data/data_r101.csv")
-#num_client = len(df.index) #顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
-num_client = 10 #ここで避難所数調整
+#num_client = len(df.index) # 顧客数（id=0,1,2,...14と番号が振られていると考える。id=0はデポ。）
+num_client = 10 # ここで避難所数調整
 
 #通れない道路
 #cant = {(5,17),(3,9),(14,16)}
@@ -49,11 +48,13 @@ df.ix[0].d = 0
 
 
 #描画用リストに顧客の位置情報を代入
-X=[]
-Y=[]
+X = []
+Y = []
 for i in range(1, num_client):
     X.append(df.ix[i].x)
     Y.append(df.ix[i].y)
+
+
 
 
 
@@ -69,10 +70,10 @@ for position in range(num_client):
     pos[position] = (df.ix[position].x,df.ix[position].y )
 
 
-#全ての顧客間の距離テーブルを作成して、np.arrayを返す。
+# 全ての顧客間の距離テーブルを作成して、np.arrayを返す。
 def create_cost():
     dis = []
-    arr = np.empty((0,num_client), int)#小数点以下を加えるならfloat型
+    arr = np.empty((0,num_client), int)  # 小数点以下を加えるならfloat型
     for i in range(num_client):
         for j in range(num_client):
             x_crd = df.ix[j].x - df.ix[i].x
@@ -87,15 +88,15 @@ def create_cost():
 
 
 
-# costは顧客数✖️顧客数の距離テーブル。np.arrayで保持。
+# costは顧客間のコスト行列
 cost = create_cost()
 
-# subtoursはデポ（id=0)を除いた顧客の全部分集合。
+# subtoursはデポを除く顧客の全部分集合
 subtours = []
 for length in range(2,num_client):
      subtours += itertools.combinations(range(1,num_client),length)
 
-#print(subtours)
+# print(subtours)
 
 
 # xは顧客数✖️顧客数のbinary変数Array。Costテーブルと対応している。1ならばその間をトラックが走ることになる。
@@ -105,8 +106,7 @@ x = np.array([[pulp.LpVariable("{0}_{1}".format(i,j),0,1,"Binary")
               for i in range(num_client)])
 num_v = pulp.LpVariable("num_v",0,100,"Integer")
 
-
-#問題の宣言と目的関数設定。目的関数は、総距離最小化。
+# 問題の宣言と目的関数設定。目的関数は、総距離最小化。
 problem = pulp.LpProblem('vrp_simple_problem', pulp.LpMinimize)
 problem += pulp.lpSum([x[i][j]*cost[i][j]
                        for i in range(num_client)
@@ -148,9 +148,9 @@ for st in subtours:
         demand += df["d"][s]
     for i,j in itertools.permutations(st,2):
         arcs.append(x[i][j])
-    #problem += pulp.lpSum(arcs) <= np.max([0,len(st) - np.ceil(demand/capacity)])
+    problem += pulp.lpSum(arcs) <= np.max([0,len(st) - np.ceil(demand/capacity)])
     count += 1
-    problem += pulp.lpSum(arcs) <= len(st)-1
+    # problem += pulp.lpSum(arcs) <= len(st)-1
 
 
 print("制約数" + str(count))
@@ -165,7 +165,7 @@ E = []
 edge_labels = {}
 
 start = time.time()
-#計算及び結果の確認
+# 計算及び結果の確認
 status = problem.solve()
 print("Status", pulp.LpStatus[status])
 
@@ -205,8 +205,8 @@ plt.xlabel("x")
 plt.ylabel("y")
 plt.xlim(0, 70)
 plt.ylim(0, 70)
-#plt.axis('off')
+# plt.axis('off')
 plt.title('Delivery route')
-plt.savefig("./fig/cvrp.png") # save as png
+plt.savefig("./fig/cvrp.png")  # save as png
 plt.grid()
 plt.show()
