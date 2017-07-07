@@ -1,5 +1,7 @@
-# -*- coding: utf-8 -*- 
-# creating a new network 
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# creating a new network
+
 import networkx as nx
 import pandas as pd
 import numpy as np
@@ -8,9 +10,9 @@ num_client = 15
 capacity = 100
 randint = np.random.randint
 
-df = pd.DataFrame({"x":randint(0,100,num_client),
-                   "y":randint(0,100,num_client),
-                   "d":randint(5,40,num_client)})
+df = pd.DataFrame({"x": randint(0, 100, num_client),
+                   "y": randint(0, 100, num_client),
+                   "d": randint(5, 40, num_client)})
 
 df.ix[0].x = 50
 df.ix[0].y = 50
@@ -22,11 +24,9 @@ N = []
 for i in range(num_client):
     N.append(i)
 
-
-
 pos = {}
 for position in range(num_client):
-    pos[N[position]] = (df.ix[position].x,df.ix[position].y )
+    pos[N[position]] = (df.ix[position].x, df.ix[position].y)
 
 
 E =[]
@@ -41,21 +41,21 @@ G.add_nodes_from(N)
 G.add_edges_from(E)
 
 
-# drawing the created network 
+# drawing the created network
 import matplotlib.pyplot as plt
 
 
 
 nx.draw_networkx(G,pos, node_color='r',node_size=150)
-nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels, font_size=11)
+nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=11)
 
 plt.legend()
 plt.xlabel("x")
 plt.ylabel("y")
 plt.xlim(-5, 105)
 plt.ylim(-5, 105)
-#plt.axis('off')
+# plt.axis('off')
 plt.title('an example')
-plt.savefig("example.png") # save as png
+plt.savefig("example.png")  # save as png
 plt.grid()
-plt.show() 
+plt.show()
